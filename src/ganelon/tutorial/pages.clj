@@ -1,2 +1,2 @@
 (ns ganelon.tutorial.pages
-  (:require [ganelon.tutorial.pages.login]))
+  (:require [ganelon.tutorial.pages.index]))

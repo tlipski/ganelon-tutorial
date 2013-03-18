@@ -13,16 +13,6 @@
             [compojure.core :as compojure]
             [somnium.congomongo :as m]))
 
-(defn make-mongo-connection [user password host port db]
-  (let [conn (m/make-connection db {:host host :port port})]
-    (m/authenticate conn user password)
-    conn))
-
-(defn navbar-link [path]
-  (h/html
-    [:li {:class (if (.startsWith (:uri req/*request*) path) "active" "")}
-     [:a {:href path} (hiccup.util/escape-html path)]]))
-
 (defn navbar []
   (h/html
    [:div.navbar.navbar-inverse.navbar-fixed-top {:style "opacity: 0.9;"}
@@ -31,7 +21,7 @@
       [:a.brand {:href "/"} "Ganelon tutorial"]
       [:div.nav-collapse.collapse
        [:ul.nav
-        (when (sess/get :user) (map navbar-link ["collections" "profiling"]))]]]]]))
+        [:li [:a {:href "/"} "New meetup!"]]]]]]]))
 
 (defn layout [& content]
   (hiccup/html5
@@ -57,13 +47,3 @@
      (hiccup/include-js "/ganelon/js/ext/ganelon.ops.gritter.js") ; growl-style notifications through gritter.js
      (hiccup/include-js "/ganelon/actions.js") ;dynamic actions interface
      ]))
-
-(dyna-routes/setmiddleware! :force-login
-  #(fn [req]
-      (if (and (sess/get :user) (sess/get :password) (sess/get :host) (sess/get :port) (sess/get :db))
-        (m/with-mongo (make-mongo-connection (sess/get :user) (sess/get :password)
-                        (sess/get :host) (sess/get :port) (sess/get :db))
-          (% req))
-        (if (and (not= "/" (:uri req/*request*)) (not= "/a/login" (:uri req/*request*)))
-          (resp/redirect "/")
-          (% req)))))

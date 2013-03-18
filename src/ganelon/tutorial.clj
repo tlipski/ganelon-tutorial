@@ -14,9 +14,12 @@
             [ring.adapter.jetty :as jetty]
             [ganelon.web.middleware :as middleware]
             [ganelon.web.app :as webapp]
-            [noir.session :as sess]))
+            [noir.session :as sess]
+            [somnium.congomongo :as db]))
 
 (defonce SERVER (atom nil))
+
+(db/set-connection! (db/make-connection (or (get (System/getenv) "MONGOHQ_URL") "mongodb://localhost/meetups")))
 
 (defn start-demo [port]
   (jetty/run-jetty

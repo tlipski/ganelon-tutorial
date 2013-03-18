@@ -9,7 +9,8 @@
 (defproject ganelon-tutorial "0.8-SNAPSHOT"
   :description "Ganelon tutorial"
   :url "http://ganelon.tomeklipski.com"
-  :dependencies [[ganelon "0.8-SNAPSHOT"]]
+  :dependencies [[ganelon "0.8-SNAPSHOT"]
+                 [congomongo "0.4.1"]]
   :license {:name "Eclipse Public License - v 1.0"
             :url "http://www.eclipse.org/legal/epl-v10.html"
             :distribution :repo
