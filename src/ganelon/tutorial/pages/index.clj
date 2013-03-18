@@ -1,4 +1,4 @@
-(ns ganelon.tutorial.pages.login
+(ns ganelon.tutorial.pages.index
   (:require
     [ganelon.web.dyna-routes :as dyna-routes]
     [ganelon.web.helpers :as web-helpers]
@@ -47,12 +47,9 @@
                                           :required "1"}]]])
 
   ))
-(actions/defwidgetaction "meetup-create" [title place]
-
-
+(actions/defjsonaction "meetup-create" [title place]
   (let [id (:_id (db/insert! :meetups {:title title :place place :times [{}]}))]
-    (ui-operations/open-page (str "/meetup/" id)))
-  )
+    (ui-operations/open-page (str "/meetup/" id))))
 
 (dyna-routes/defpage "/" []
   (common/layout
