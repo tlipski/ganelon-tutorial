@@ -29,7 +29,7 @@
      [:title "Ganelon tutorial - MongoDB browser"]
      (hiccup/include-css "/ganelon/css/bootstrap.css")
      (hiccup/include-css "/ganelon/css/jquery.gritter.css")
-     (hiccup/include-css "/ganelon-demo/font-awesome/css/font-awesome.css")]
+     ]
     [:body.default-body
      [:div#navbar (navbar)]
      [:div.container {:style "padding-top: 70px"}
@@ -46,4 +46,8 @@
      (hiccup/include-js "/ganelon/js/ext/ganelon.ops.bootstrap.js") ;additional Bootstrap related actions
      (hiccup/include-js "/ganelon/js/ext/ganelon.ops.gritter.js") ; growl-style notifications through gritter.js
      (hiccup/include-js "/ganelon/actions.js") ;dynamic actions interface
+     (hiccup/include-js "/js/ganelon-tutorial.js") ;additional plugins
      ]))
+
+(defn push-state [url]
+  (ui/ui-operation "push-state" :url url))
