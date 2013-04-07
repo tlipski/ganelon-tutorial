@@ -17,8 +17,8 @@
     [:p (widgets/action-button "meetup-create-invitation" {:meetup-id meetup-id}
           {:class "btn btn-primary"} "Create new invitation")]
     (for [inv (meetup/retrieve-invitations meetup-id)]
-      [:p "Link: " [:a {:href (str (web-helpers/current-request-host-part) "/invites/" (:_id inv))}
-                    (str (web-helpers/current-request-host-part) "/invites/" (:_id inv))]])))
+      [:p "Link: " [:a {:href (str (web-helpers/current-request-host-part) "/i/" (:_id inv))}
+                    (str (web-helpers/current-request-host-part) "/i/" (:_id inv))]])))
 
 (actions/defwidgetaction "meetup-create-invitation" [meetup-id]
   (meetup/create-invitation! meetup-id)

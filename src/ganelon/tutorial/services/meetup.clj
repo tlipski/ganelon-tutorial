@@ -1,22 +1,20 @@
 (ns ganelon.tutorial.services.meetup
-  (:require [somnium.congomongo :as db]))
-
-(defn mkid [id]
-  (cond
-    (instance? org.bson.types.ObjectId) id
-    (string? id) (db/object-id id)
-    :else (mkid (str id))))
+  (:require [somnium.congomongo :as db]
+            [crypto.random :as rnd]))
 
 (defn retrieve [id]
-  (db/fetch-one :meetups :where {:_id (mkid id)}))
+  (db/fetch-one :meetups :where {:_id id}))
 
 (defn retrieve-list [admin-id skip]
-  (db/fetch :meetups :where {:admin-id admin-id} :skip skip :sort {:_id -1}))
+  (db/fetch :meetups :where {:admin-id admin-id} :skip skip :sort {:create-time -1}))
 
 (defn create! [title place admin-id]
-  (db/insert! :meetups {:title title :place place :times []
-                        :admin-id admin-id
-                        :create-time (java.util.Date.)}))
+  (let [id (rnd/url-part 6)]
+    (db/insert! :meetups {:_id id
+                          :title title :place place :times []
+                          :admin-id admin-id
+                          :create-time (java.util.Date.)})
+    id))
 
 (defn update! [id & attrs]
   (let [meetup (retrieve id)
@@ -25,10 +23,10 @@
     new-meetup))
 
 (defn create-invitation! [meetup-id]
-  (db/insert! :meetup-invites {:meetup-id (mkid meetup-id) :create-time (java.util.Date.)}))
+  (db/insert! :meetup-invites {:_id (rnd/url-part 7) :meetup-id meetup-id :create-time (java.util.Date.)}))
 
 (defn retrieve-invitations [meetup-id]
-  (db/fetch :meetup-invites :where {:meetup-id (mkid meetup-id)} :sort {:_id -1}))
+  (db/fetch :meetup-invites :where {:meetup-id meetup-id} :sort {:create-time -1}))
 
 (defn add-time! [id date time]
   (let [mu (retrieve id)]
@@ -36,5 +34,5 @@
       (update! id :times (conj (:times mu) {:date date :time time :accepted []})))))
 
 (defn remove-time! [id date time]
-  (update! id :times
-    (filter (fn [x] (not (and (= (:date x) date) (= (:time x) time)))) (:times (retrieve id)))))
+  (update! id :times (filter (fn [x] (not (and (= (:date x) date) (= (:time x) time))))
+                       (:times (retrieve id)))))

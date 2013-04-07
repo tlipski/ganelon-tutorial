@@ -10,7 +10,8 @@
   :description "Ganelon tutorial"
   :url "http://ganelon.tomeklipski.com"
   :dependencies [[ganelon "0.9-SNAPSHOT"]
-                 [congomongo "0.4.1"]]
+                 [congomongo "0.4.1"]
+                 [crypto-random "1.1.0"]]
   :license {:name "Eclipse Public License - v 1.0"
             :url "http://www.eclipse.org/legal/epl-v10.html"
             :distribution :repo

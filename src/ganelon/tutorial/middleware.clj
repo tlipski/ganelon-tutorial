@@ -1,15 +1,16 @@
 (ns ganelon.tutorial.middleware
   (:require [ganelon.web.dyna-routes :as dyna-routes]
             [ganelon.tutorial.pages.common :as common]
-            [noir.cookies :as cookies]))
+            [noir.cookies :as cookies]
+            [crypto.random :as rnd]))
 
 (def ^:dynamic *admin-id* nil)
 
 (defn get-or-set-admin-id! []
   (if-let [admin-id (cookies/get :meetup-admin-id )]
     admin-id
-    (let [admin-id (java.util.UUID/randomUUID)]
-      (cookies/put! :meetup-admin-id admin-id)
+    (let [admin-id (rnd/url-part 20)]
+      (cookies/put! :meetup-admin-id {:value admin-id :path "/" :expires "Thu, 01-Jan-2099 00:00:00 GMT"})
       admin-id)))
 
 (dyna-routes/setmiddleware! :admin-id (fn [handler]
@@ -18,7 +19,7 @@
                                             (handler request)))))
 
 (defmacro with-admin-id-from-meetup! [meetup-id & body]
-  `(let [meetup# (db/fetch-one :meetups :where {:_id (db/object-id ~meetup-id)})]
+  `(let [meetup# (db/fetch-one :meetups :where {:_id ~meetup-id})]
      (cookies/put! :meetup-admin-id (:admin-id meetup#))
      (binding [*admin-id* (:admin-id meetup#)]
        ~@body)))
