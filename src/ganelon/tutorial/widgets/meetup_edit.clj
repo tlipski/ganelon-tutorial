@@ -18,7 +18,6 @@
     [:h1 "Meetup details"]
     (let [url (str (web-helpers/current-request-host-part)  "/meetup/edit/" (:_id meetup))]
       [:p "Meetup admin url: " [:a {:href url } url]])
-    [:p "DEBUG admin id: " [:b (:admin-id meetup)]]
     [:form.form-horizontal.well
      [:div.control-group [:label.control-label {:for "inputTitle"} "Title"]
       [:div.controls [:input#inputTitle.input-xlarge {:placeholder "Title for a meetup" :type "text"

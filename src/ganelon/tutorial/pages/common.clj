@@ -50,10 +50,6 @@
     [:body.default-body
      [:div#navbar (navbar)]
      [:div.container {:style "padding-top: 70px"}
-      [:div.row
-        [:div.span12
-          [:div#notification-area]]]]
-     [:div.container
       content]
      [:footer {:style "opacity:0.9; text-align: center; padding: 30px 0; margin-top: 70px; border-top: 1px solid #E5E5E5; color: #f6f6f6; background-color: #161616;"}
       [:div.container

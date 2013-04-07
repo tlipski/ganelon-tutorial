@@ -31,11 +31,6 @@
 
 (actions/defjsonaction "meetup-create" [title place]
   (let [id (meetup/create! title place (middleware/get-admin-id))]
-    [(ui-operations/html "#notification-area"
-       (hiccup/html
-         [:div.alert.alert-success [:button.close {:type "button" :data-dismiss "alert"} "×"]
-          [:h1 "Meetup created"]
-          [:p "The meetup " [:b (hiccup.util/escape-html title)] " has been created."]]))
-     (common/push-state (str "/meetup/edit/" id))
+    [(common/push-state (str "/meetup/edit/" id))
      (ui-operations/html "#contents"
        (meetup-edit/meetup-details-widget id))]))

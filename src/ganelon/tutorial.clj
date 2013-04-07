@@ -33,5 +33,5 @@
     {:port port :join? false}))
 
 (defn -main [& m]
-  (let [port (Integer. (or (first m) (get (System/getenv) "PORT" "8099")))]
+  (let [port (Integer. (or (first m) (get (System/getenv) "PORT" "8098")))]
     (swap! SERVER (fn [s] (when s (.stop s)) (start-demo port)))))

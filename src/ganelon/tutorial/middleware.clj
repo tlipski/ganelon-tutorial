@@ -1,6 +1,7 @@
 (ns ganelon.tutorial.middleware
   (:require [ganelon.web.dyna-routes :as dyna-routes]
             [ganelon.tutorial.pages.common :as common]
+            [ganelon.tutorial.services.meetup :as meetup]
             [noir.cookies :as cookies]
             [crypto.random :as rnd]))
 
@@ -19,7 +20,7 @@
                                             (handler request)))))
 
 (defmacro with-admin-id-from-meetup! [meetup-id & body]
-  `(let [meetup# (db/fetch-one :meetups :where {:_id ~meetup-id})]
+  `(let [meetup# (meetup/retrieve ~meetup-id)]
      (cookies/put! :meetup-admin-id (:admin-id meetup#))
      (binding [*admin-id* (:admin-id meetup#)]
        ~@body)))
