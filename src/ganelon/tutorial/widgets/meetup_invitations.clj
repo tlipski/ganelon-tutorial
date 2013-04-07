@@ -8,7 +8,7 @@
     [hiccup.util]
     [hiccup.core :as hiccup]
     [ganelon.tutorial.pages.common :as common]
-    [ganelon.tutorial.services.meetup :as meetup]
+    [ganelon.tutorial.services.invitation :as invitation]
     [ganelon.tutorial.widgets.meetup-times :as meetup-times]))
 
 (defn meetup-invitations-widget [meetup-id]
@@ -18,15 +18,21 @@
       [:span "Recipient's name:"] "&nbsp;"
       [:input {:type "text" :name "name" :required "1"}] "&nbsp;"
       [:button.btn.btn-primary "Create new invitation"])
-    (for [inv (meetup/retrieve-invitations meetup-id)]
-      [:p
-       [:b (hiccup.util/escape-html (:name inv))] [:br]
-       "Link: " [:a {:href (str (web-helpers/current-request-host-part) "/i/" (:_id inv))}
-                    (str (web-helpers/current-request-host-part) "/i/" (:_id inv))]])))
+    (let [invitations (invitation/retrieve-list meetup-id)]
+      (if (empty? invitations)
+        [:div.alert "No invitations created yet. Please use the form above to add some!"]
+        (for [inv invitations]
+          [:p
+           [:b (hiccup.util/escape-html (:name inv))] [:br]
+           "Link: " [:a {:href (str (web-helpers/current-request-host-part) "/i/" (:_id inv))}
+                        (str (web-helpers/current-request-host-part) "/i/" (:_id inv))]
+           (widgets/action-link "invitation-cancel" {:meetup-id meetup-id :id (:_id inv)} {:class "pull-right"}
+             [:i.icon-remove] " Cancel")])))))
 
 (actions/defwidgetaction "invitation-create" [name meetup-id]
-  (meetup/create-invitation! meetup-id name)
+  (invitation/create! meetup-id name)
   (meetup-invitations-widget meetup-id))
 
-(actions/defwidgetaction "invitation-cancel" [id]
-  )
+(actions/defwidgetaction "invitation-cancel" [meetup-id id]
+  (invitation/delete! id)
+  (meetup-invitations-widget meetup-id))

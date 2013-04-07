@@ -25,12 +25,6 @@
     (db/update! :meetups meetup new-meetup)
     new-meetup))
 
-(defn create-invitation! [meetup-id name]
-  (db/insert! :meetup-invites {:_id (rnd/url-part 7) :name name :meetup-id meetup-id :create-time (java.util.Date.)}))
-
-(defn retrieve-invitations [meetup-id]
-  (db/fetch :meetup-invites :where {:meetup-id meetup-id} :sort {:create-time -1}))
-
 (defn add-time! [id date time]
   (let [mu (retrieve id)]
     (when (not (some (fn [x] (and (= (:date x) date) (= (:time x) time))) (:times mu)))
