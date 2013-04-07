@@ -14,12 +14,19 @@
 (defn meetup-invitations-widget [meetup-id]
   (widgets/with-widget "meetup-invitations-widget"
     [:h2 "Meeting invitations"]
-    [:p (widgets/action-button "meetup-create-invitation" {:meetup-id meetup-id}
-          {:class "btn btn-primary"} "Create new invitation")]
+    (widgets/action-form "invitation-create" {:meetup-id meetup-id} {:class "form-horizontal well"}
+      [:span "Recipient's name:"] "&nbsp;"
+      [:input {:type "text" :name "name" :required "1"}] "&nbsp;"
+      [:button.btn.btn-primary "Create new invitation"])
     (for [inv (meetup/retrieve-invitations meetup-id)]
-      [:p "Link: " [:a {:href (str (web-helpers/current-request-host-part) "/i/" (:_id inv))}
+      [:p
+       [:b (hiccup.util/escape-html (:name inv))] [:br]
+       "Link: " [:a {:href (str (web-helpers/current-request-host-part) "/i/" (:_id inv))}
                     (str (web-helpers/current-request-host-part) "/i/" (:_id inv))]])))
 
-(actions/defwidgetaction "meetup-create-invitation" [meetup-id]
-  (meetup/create-invitation! meetup-id)
+(actions/defwidgetaction "invitation-create" [name meetup-id]
+  (meetup/create-invitation! meetup-id name)
   (meetup-invitations-widget meetup-id))
+
+(actions/defwidgetaction "invitation-cancel" [id]
+  )

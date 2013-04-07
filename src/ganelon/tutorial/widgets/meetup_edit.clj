@@ -43,12 +43,17 @@
       (meetup-times/meetup-times-widget meetup)
       (meetup-invitations/meetup-invitations-widget meetup-id))))
 
+(actions/defjsonaction "meetup-edit" [id]
+  [(common/push-state (str "/meetup/edit/" id))
+   (ui-operations/html "#contents" (meetup-details-widget id))])
+
 (actions/defjsonaction "meetup-title-update" [id title]
   (meetup/update! id :title title)
-  (ui-operations/html "#update-title-loader"
-    (hiccup.core/html [:span {:onmouseover "$(this).fadeOut();"} "&nbsp;" [:i.icon-check] "&nbsp;Saved"])))
+  [(ui-operations/fade (str ".meetup-title-" id) (hiccup.util/escape-html title))
+   (ui-operations/fade "#update-title-loader"
+    (hiccup.core/html [:span {:onmouseover "$(this).fadeOut();"} "&nbsp;" [:i.icon-check] "&nbsp;Saved"]))])
 
 (actions/defjsonaction "meetup-place-update" [id place]
   (meetup/update! id :place place)
-  (ui-operations/html "#update-place-loader"
+  (ui-operations/fade "#update-place-loader"
     (hiccup.core/html [:span {:onmouseover "$(this).fadeOut();"} "&nbsp;" [:i.icon-check] "&nbsp;Saved"])))

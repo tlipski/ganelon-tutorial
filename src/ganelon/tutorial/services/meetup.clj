@@ -5,8 +5,11 @@
 (defn retrieve [id]
   (db/fetch-one :meetups :where {:_id id}))
 
-(defn retrieve-list [admin-id skip]
-  (db/fetch :meetups :where {:admin-id admin-id} :skip skip :sort {:create-time -1}))
+(defn retrieve-list [admin-id skip limit]
+  (db/fetch :meetups :where {:admin-id admin-id} :skip skip :limit limit :sort {:create-time -1}))
+
+(defn count-list [admin-id]
+  (db/fetch-count :meetups :where {:admin-id admin-id}))
 
 (defn create! [title place admin-id]
   (let [id (rnd/url-part 6)]
@@ -22,8 +25,8 @@
     (db/update! :meetups meetup new-meetup)
     new-meetup))
 
-(defn create-invitation! [meetup-id]
-  (db/insert! :meetup-invites {:_id (rnd/url-part 7) :meetup-id meetup-id :create-time (java.util.Date.)}))
+(defn create-invitation! [meetup-id name]
+  (db/insert! :meetup-invites {:_id (rnd/url-part 7) :name name :meetup-id meetup-id :create-time (java.util.Date.)}))
 
 (defn retrieve-invitations [meetup-id]
   (db/fetch :meetup-invites :where {:meetup-id meetup-id} :sort {:create-time -1}))

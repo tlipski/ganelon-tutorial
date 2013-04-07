@@ -4,15 +4,16 @@
             [noir.cookies :as cookies]
             [ganelon.tutorial.widgets.meetup-add :as meetup-add]
             [ganelon.tutorial.widgets.meetup-edit :as meetup-edit]
+            [ganelon.tutorial.widgets.meetups-list :as meetups-list]
             [ganelon.tutorial.middleware :as middleware]))
 
 (defn meetup-layout [& contents]
   (common/layout
     [:div.row-fluid [:div.span3 (meetup-add/new-meetup-widget)
-                     ;list here - by admin cookie id
+                     (meetups-list/meetups-list-widget nil)
                      ]
      [:div.span1 ]
-     [:div#contents.span8 contents]]))
+     [:div.span8 [:div#contents contents]]]))
 
 (dyna-routes/defpage "/" []
   (meetup-layout

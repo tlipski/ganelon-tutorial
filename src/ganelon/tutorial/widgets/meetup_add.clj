@@ -9,6 +9,7 @@
             [ganelon.tutorial.pages.common :as common]
             [ganelon.tutorial.services.meetup :as meetup]
             [ganelon.tutorial.widgets.meetup-edit :as meetup-edit]
+            [ganelon.tutorial.widgets.meetups-list :as meetups-list]
             [ganelon.tutorial.middleware :as middleware]
             ))
 
@@ -32,5 +33,6 @@
 (actions/defjsonaction "meetup-create" [title place]
   (let [id (meetup/create! title place (middleware/get-admin-id))]
     [(common/push-state (str "/meetup/edit/" id))
+     (meetups-list/update-list-widget-operation 0)
      (ui-operations/html "#contents"
        (meetup-edit/meetup-details-widget id))]))

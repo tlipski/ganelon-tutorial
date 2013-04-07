@@ -44,12 +44,12 @@
   (if-let [new-mu (meetup/add-time! id date time)]
     ;success
      [(ui-operations/make-empty "#meetup-add-time-message")
-      (ui-operations/html "#meetup-times-list-widget" (meetup-times-list-widget new-mu))]
+      (ui-operations/fade "#meetup-times-list-widget" (meetup-times-list-widget new-mu))]
     ;error - such time already exists
-     (ui-operations/html "#meetup-add-time-message"
+     (ui-operations/fade "#meetup-add-time-message"
         (hiccup.core/html [:div.alert [:button.close {:type "button" :data-dismiss "alert"} "×"]
                            [:p "Such date & time combination already exists!"]]))))
 
 (actions/defjsonaction "meetup-remove-time" [id date time]
-  (ui-operations/html "#meetup-times-list-widget" (meetup-times-list-widget
+  (ui-operations/fade "#meetup-times-list-widget" (meetup-times-list-widget
                                                (meetup/remove-time! id date time))))
