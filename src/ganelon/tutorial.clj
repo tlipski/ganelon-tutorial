@@ -9,6 +9,7 @@
 (ns ganelon.tutorial
   (:gen-class)
   (:require [ganelon.tutorial.pages]
+            [ganelon.tutorial.middleware]
             [ring.middleware.stacktrace]
             [ring.middleware.reload]
             [ring.adapter.jetty :as jetty]
@@ -32,5 +33,5 @@
     {:port port :join? false}))
 
 (defn -main [& m]
-  (let [port (Integer. (or (first m) (get (System/getenv) "PORT" "8091")))]
+  (let [port (Integer. (or (first m) (get (System/getenv) "PORT" "8099")))]
     (swap! SERVER (fn [s] (when s (.stop s)) (start-demo port)))))
