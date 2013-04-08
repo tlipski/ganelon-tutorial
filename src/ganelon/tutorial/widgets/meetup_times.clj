@@ -8,21 +8,34 @@
             [hiccup.core :as hiccup]
             [ganelon.tutorial.pages.common :as common]
             [ganelon.tutorial.services.meetup :as meetup]
+            [ganelon.tutorial.services.invitation :as invitation]
             ))
 
 (defn meetup-times-list-widget [meetup]
   (widgets/with-widget "meetup-times-list-widget"
     (if (not-empty (:times meetup))
+      (let [invitations (invitation/retrieve-list (:_id meetup))]
       [:table.table.table-striped.table-hover {:style "width: initial"}
-       [:thead [:tr [:th ] [:th "Date"] [:th "Time"]]]
+       [:thead [:tr [:th ] [:th "Date"] [:th "Time"]
+                (for [inv invitations]
+                  [:th [:small (hiccup.util/escape-html (:name inv))]])]]
        (for [t (:times meetup)]
          [:tr [:td (when (empty? (:accepted t))
                      (widgets/action-link "meetup-remove-time" (assoc t :id (:_id meetup)) {} [:i.icon-remove ]))]
-          [:td (:date t)] [:td (:time t)]])]
+          [:td (:date t)] [:td (:time t)]
+          (for [inv invitations]
+            [:td {:style "text-align: center"}
+             (if (:confirmed inv) [:i.icon-thumbs-up] [:i.icon-thumbs-down])]
+            )
+          ])])
       [:div.alert [:i "No meetup times defined yet!"]])))
 
+(defn refresh-meetup-times-list-widget-operations [meetup-id]
+  (ui-operations/fade "#meetup-times-list-widget"
+    (meetup-times-list-widget (meetup/retrieve meetup-id))))
+
 (defn meetup-times-widget [meetup]
-  (widgets/with-div
+  (widgets/with-widget "meetup-times-widget"
     [:h2 "Possible meetup times"]
     [:div#meetup-add-time-message ]
     (widgets/action-form "meetup-add-time" {:id (:_id meetup)} {:class "form-inline"}

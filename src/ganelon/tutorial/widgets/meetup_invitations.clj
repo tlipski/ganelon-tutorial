@@ -31,8 +31,10 @@
 
 (actions/defwidgetaction "invitation-create" [name meetup-id]
   (invitation/create! meetup-id name)
+  (actions/put-operation! (meetup-times/refresh-meetup-times-list-widget-operations meetup-id))
   (meetup-invitations-widget meetup-id))
 
 (actions/defwidgetaction "invitation-cancel" [meetup-id id]
   (invitation/delete! id)
+  (actions/put-operation! (meetup-times/refresh-meetup-times-list-widget-operations meetup-id))
   (meetup-invitations-widget meetup-id))
