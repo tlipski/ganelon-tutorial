@@ -25,11 +25,5 @@
     (db/update! :meetups meetup new-meetup)
     new-meetup))
 
-(defn add-time! [id date time]
-  (let [mu (retrieve id)]
-    (when (not (some (fn [x] (and (= (:date x) date) (= (:time x) time))) (:times mu)))
-      (update! id :times (conj (:times mu) {:date date :time time :accepted []})))))
 
-(defn remove-time! [id date time]
-  (update! id :times (filter (fn [x] (not (and (= (:date x) date) (= (:time x) time))))
-                       (:times (retrieve id)))))
+

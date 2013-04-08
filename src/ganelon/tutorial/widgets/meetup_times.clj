@@ -8,37 +8,51 @@
             [hiccup.core :as hiccup]
             [ganelon.tutorial.pages.common :as common]
             [ganelon.tutorial.services.meetup :as meetup]
+            [ganelon.tutorial.services.meetup-time :as meetup-time]
             [ganelon.tutorial.services.invitation :as invitation]
             ))
 
-(defn meetup-times-list-widget [meetup]
+(defn toggle-meetup-times-button [t inv]
+  (let [accepted? (some #{(:_id inv)} (:accepted t))]
+    (widgets/with-div
+      (widgets/action-loader-link "meetup-times-toggle-invitation"
+        {:invitation-id (:_id inv)
+         :id (:_id t)
+         :value (not accepted?)} {}
+      (if accepted? [:i.icon-thumbs-up] [:i.icon-thumbs-down])))))
+
+(defn meetup-times-list-widget [meetup-id]
   (widgets/with-widget "meetup-times-list-widget"
-    (if (not-empty (:times meetup))
-      (let [invitations (invitation/retrieve-list (:_id meetup))]
-      [:table.table.table-striped.table-hover {:style "width: initial"}
-       [:thead [:tr [:th ] [:th "Date"] [:th "Time"]
-                (for [inv invitations]
-                  [:th [:small (hiccup.util/escape-html (:name inv))]])]]
-       (for [t (:times meetup)]
-         [:tr [:td (when (empty? (:accepted t))
-                     (widgets/action-link "meetup-remove-time" (assoc t :id (:_id meetup)) {} [:i.icon-remove ]))]
-          [:td (:date t)] [:td (:time t)]
-          (for [inv invitations]
-            [:td {:style "text-align: center"}
-             (if (:confirmed inv) [:i.icon-thumbs-up] [:i.icon-thumbs-down])]
-            )
-          ])])
-      [:div.alert [:i "No meetup times defined yet!"]])))
+    (let [times (meetup-time/retrieve-list meetup-id)]
+      (if (not-empty times)
+        (let [invitations (invitation/retrieve-list meetup-id)]
+          [:table.table.table-striped.table-hover {:style "width: initial"}
+           [:thead [:tr [:th ] [:th "Date"] [:th "Time"]
+                    (for [inv invitations]
+                      [:th [:small (hiccup.util/escape-html (:name inv))]])]]
+           (for [t times]
+             [:tr [:td (widgets/action-link "meetup-remove-time" {:id (:_id t)} {} [:i.icon-remove ])]
+              [:td (:date t)] [:td (:time t)]
+              (for [inv invitations]
+                [:td {:style "text-align: center"}
+                 (toggle-meetup-times-button t inv)])])])
+      [:div.alert [:i "No meetup times defined yet!"]]))))
+
+(actions/defwidgetaction "meetup-times-toggle-invitation" [id invitation-id value]
+  (if (boolean (Boolean. value))
+    (meetup-time/accept-time! id invitation-id)
+    (meetup-time/reject-time! id invitation-id))
+  (toggle-meetup-times-button (meetup-time/retrieve id) (invitation/retrieve invitation-id)))
 
 (defn refresh-meetup-times-list-widget-operations [meetup-id]
   (ui-operations/fade "#meetup-times-list-widget"
-    (meetup-times-list-widget (meetup/retrieve meetup-id))))
+    (meetup-times-list-widget meetup-id)))
 
-(defn meetup-times-widget [meetup]
+(defn meetup-times-widget [meetup-id]
   (widgets/with-widget "meetup-times-widget"
     [:h2 "Possible meetup times"]
     [:div#meetup-add-time-message ]
-    (widgets/action-form "meetup-add-time" {:id (:_id meetup)} {:class "form-inline"}
+    (widgets/action-form "meetup-add-time" {:id meetup-id} {:class "form-inline"}
       [:label.control-label {:for "meetup-add-date"} "Date "]
       [:div.controls.input-append.date.datepicker {:data-date-format "dd-mm-yyyy" :data-date ""}
        [:input#meetup-add-date.input-small {:type "text" :required "1" :name "date"}]
@@ -50,19 +64,21 @@
       [:script "$('#meetup-add-time').timepicker({showMeridian: false});"]
       [:script "$('.datepicker').datepicker();"]
       [:button.btn.btn-success {:type "submit"} "Add"])
-    (meetup-times-list-widget meetup)
+    (meetup-times-list-widget meetup-id)
     ))
 
 (actions/defjsonaction "meetup-add-time" [id date time]
-  (if-let [new-mu (meetup/add-time! id date time)]
+  (if-let [new-mu (meetup-time/add-time! id date time)]
     ;success
      [(ui-operations/make-empty "#meetup-add-time-message")
-      (ui-operations/fade "#meetup-times-list-widget" (meetup-times-list-widget new-mu))]
+      (ui-operations/fade "#meetup-times-list-widget" (meetup-times-list-widget id))]
     ;error - such time already exists
      (ui-operations/fade "#meetup-add-time-message"
         (hiccup.core/html [:div.alert [:button.close {:type "button" :data-dismiss "alert"} "×"]
                            [:p "Such date & time combination already exists!"]]))))
 
-(actions/defjsonaction "meetup-remove-time" [id date time]
-  (ui-operations/fade "#meetup-times-list-widget" (meetup-times-list-widget
-                                               (meetup/remove-time! id date time))))
+(actions/defjsonaction "meetup-remove-time" [id]
+  (let [time (meetup-time/retrieve id)]
+    (meetup-time/remove-time! id)
+    (ui-operations/fade "#meetup-times-list-widget"
+      (meetup-times-list-widget (:meetup-id time)))))

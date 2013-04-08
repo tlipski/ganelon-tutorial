@@ -40,7 +40,7 @@
   (let [meetup (meetup/retrieve meetup-id)]
     (widgets/with-div
       (meetup-edit-form-widget meetup)
-      (meetup-times/meetup-times-widget meetup)
+      (meetup-times/meetup-times-widget meetup-id)
       (meetup-invitations/meetup-invitations-widget meetup-id))))
 
 (actions/defjsonaction "meetup-edit" [id]
