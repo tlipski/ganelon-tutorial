@@ -8,7 +8,7 @@
 
 (ns ganelon.tutorial
   (:gen-class)
-  (:require [ganelon.tutorial.pages]
+  (:require [ganelon.tutorial.pages.routes]
             [ganelon.tutorial.middleware]
             [ring.middleware.stacktrace]
             [ring.middleware.reload]

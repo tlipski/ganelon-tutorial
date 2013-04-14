@@ -1,7 +1,8 @@
-(ns ganelon.tutorial.pages.index
+(ns ganelon.tutorial.pages.routes
   (:require [ganelon.web.dyna-routes :as dyna-routes]
             [ganelon.tutorial.pages.common :as common]
             [noir.cookies :as cookies]
+            [ganelon.tutorial.widgets.invitation-details :as invitation-details]
             [ganelon.tutorial.widgets.meetup-add :as meetup-add]
             [ganelon.tutorial.widgets.meetup-edit :as meetup-edit]
             [ganelon.tutorial.widgets.meetups-list :as meetups-list]
@@ -10,8 +11,7 @@
 (defn meetup-layout [& contents]
   (common/layout
     [:div.row-fluid [:div.span3 (meetup-add/new-meetup-widget)
-                     (meetups-list/meetups-list-widget nil)
-                     ]
+                     (meetups-list/meetups-list-widget nil)]
      [:div.span1 ]
      [:div.span8 [:div#contents contents]]]))
 
@@ -25,3 +25,7 @@
   (middleware/with-admin-id-from-meetup! id
     (meetup-layout
       (meetup-edit/meetup-details-widget id))))
+
+(dyna-routes/defpage "/i/:id" [id]
+  (meetup-layout
+    (invitation-details/invitation-details-widget id)))
