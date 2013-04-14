@@ -34,11 +34,12 @@
             (let [invitations (invitation/retrieve-list meetup-id)
                   editable-invitation-ids (or editable-invitation-ids (map :_id invitations))]
               [:table.table.table-striped.table-hover {:style "width: initial"}
-               [:thead [:tr [:th ] [:th "Date"] [:th "Time"]
+               [:thead [:tr (when-not editable-invitation-ids [:th ]) [:th "Date"] [:th "Time"]
                         (for [inv invitations]
                           [:th [:small (hiccup.util/escape-html (:name inv))]])]]
                (for [t times]
-                 [:tr [:td (widgets/action-link "meetup-remove-time" {:id (:_id t)} {} [:i.icon-remove ])]
+                 [:tr (when-not editable-invitation-ids
+                        [:td (widgets/action-link "meetup-remove-time" {:id (:_id t)} {} [:i.icon-remove ])])
                   [:td (:date t)] [:td (:time t)]
                   (for [inv invitations]
                     [:td {:style "text-align: center; padding:0px; border-left: 1px solid #ccc"}
