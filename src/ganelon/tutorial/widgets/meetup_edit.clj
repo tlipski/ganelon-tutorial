@@ -13,38 +13,39 @@
     [ganelon.tutorial.widgets.meetup-invitations :as meetup-invitations]
     ))
 
+(common/wrap-with-linked-source
 (defn meetup-edit-form-widget [meetup]
-  (common/link-to-source
-    (widgets/with-div
-      [:h1 "Meetup details"]
-      (let [url (str (web-helpers/current-request-host-part)  "/meetup/edit/" (:_id meetup))]
-        [:p "Meetup admin url: " [:a {:href url } url]])
-      [:form.form-horizontal.well
-       [:div.control-group [:label.control-label {:for "inputTitle"} "Title"]
-        [:div.controls [:input#inputTitle.input-xlarge {:placeholder "Title for a meetup" :type "text"
-                                                        :value (:title meetup)
-                                                        :onkeypress "$('#update-title-loader > *').fadeOut();"
-                                                        :onchange (str "GanelonAction.meetup_title_update('" (:_id meetup) "', this.value);")
-                                                        :name "title"
-                                                        :required "1"}]
-         [:span#update-title-loader]]]
-       [:div.control-group [:label.control-label {:for "inputPlace"} "Place"]
-        [:div.controls [:input#inputPlace.input-xlarge {:placeholder "Place for a meetup" :type "text"
-                                                        :value (:place meetup)
-                                                        :onkeypress "$('#update-place-loader > *').fadeOut();"
-                                                        :onchange (str "GanelonAction.meetup_place_update('" (:_id meetup) "', this.value);")
-                                                        :name "place"
-                                                        :required "1"}]
-         [:span#update-place-loader]]]])))
+  (widgets/with-div
+    [:h1 "Meetup details"]
+    (let [url (str (web-helpers/current-request-host-part)  "/meetup/edit/" (:_id meetup))]
+      [:p "Meetup admin url: " [:a {:href url } url]])
+    [:form.form-horizontal.well
+     [:div.control-group [:label.control-label {:for "inputTitle"} "Title"]
+      [:div.controls [:input#inputTitle.input-xlarge {:placeholder "Title for a meetup" :type "text"
+                                                      :value (:title meetup)
+                                                      :onkeypress "$('#update-title-loader > *').fadeOut();"
+                                                      :onchange (str "GanelonAction.meetup_title_update('" (:_id meetup) "', this.value);")
+                                                      :name "title"
+                                                      :required "1"}]
+       [:span#update-title-loader]]]
+     [:div.control-group [:label.control-label {:for "inputPlace"} "Place"]
+      [:div.controls [:input#inputPlace.input-xlarge {:placeholder "Place for a meetup" :type "text"
+                                                      :value (:place meetup)
+                                                      :onkeypress "$('#update-place-loader > *').fadeOut();"
+                                                      :onchange (str "GanelonAction.meetup_place_update('" (:_id meetup) "', this.value);")
+                                                      :name "place"
+                                                      :required "1"}]
+       [:span#update-place-loader]]]])))
 
+(common/wrap-with-linked-source
 (defn meetup-details-widget [meetup-id]
-  (let [meetup (meetup/retrieve meetup-id)]
-    (common/link-to-source
-      (widgets/with-div
+  (widgets/with-div
+    (let [meetup (meetup/retrieve meetup-id)]
+      [:div
         [:div {:style "padding-top: 20px;"}
-         (meetup-edit-form-widget meetup)]
+          (meetup-edit-form-widget meetup)]
         (meetup-times/meetup-times-widget meetup-id)
-        (meetup-invitations/meetup-invitations-widget meetup-id)))))
+        (meetup-invitations/meetup-invitations-widget meetup-id)]))))
 
 (actions/defjsonaction "meetup-edit" [id]
   [(common/push-state (str "/meetup/edit/" id))

@@ -13,12 +13,13 @@
 
 (def LIMIT 10)
 
+(common/wrap-with-linked-source
 (defn meetups-list-widget [skip]
-  (common/link-to-source
+  (widgets/with-widget "meetups-list-widget"
     (let [skip (or skip (sess/get :meetups-list-skip) 0)
           admin-id (middleware/get-admin-id)
           cnt (meetup/count-list admin-id)]
-      (widgets/with-widget "meetups-list-widget"
+      [:div
         [:h2 "Your recent meetups"]
         [:p "Total: " [:b cnt] [:br]
          (widgets/action-button "meetups-list" {:skip 0}
@@ -35,7 +36,7 @@
            (widgets/action-link "meetup-edit" {:id (:_id mu)} {}
              [:span {:class (str "meetup-title-" (:_id mu))}
               (hiccup.util/escape-html (:title mu))]
-             [:small {:style "margin-left: 5px; color: #666666"} (str (:create-time mu))])])]))))
+             [:small {:style "margin-left: 5px; color: #666666"} (str (:create-time mu))])])]]))))
 
 (defn update-list-widget-operation [skip]
   (ui-operations/html "#meetups-list-widget"
