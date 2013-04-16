@@ -27,6 +27,8 @@
                                                       :onchange (str "GanelonAction.meetup_title_update('" (:_id meetup) "', this.value);")
                                                       :name "title"
                                                       :required "1"}]
+       ;this function is used solely for demonstration purposes
+       (common/show-action-source-link "meetup-title-update")
        [:span#update-title-loader]]]
      [:div.control-group [:label.control-label {:for "inputPlace"} "Place"]
       [:div.controls [:input#inputPlace.input-xlarge {:placeholder "Place for a meetup" :type "text"
@@ -35,6 +37,8 @@
                                                       :onchange (str "GanelonAction.meetup_place_update('" (:_id meetup) "', this.value);")
                                                       :name "place"
                                                       :required "1"}]
+       ;this function is used solely for demonstration purposes
+       (common/show-action-source-link "meetup-place-update")
        [:span#update-place-loader]]]])))
 
 (common/wrap-with-linked-source
@@ -47,17 +51,20 @@
         (meetup-times/meetup-times-widget meetup-id)
         (meetup-invitations/meetup-invitations-widget meetup-id)]))))
 
+(common/register-action-meta
 (actions/defjsonaction "meetup-edit" [id]
   [(common/push-state (str "/meetup/edit/" id))
-   (ui-operations/html "#contents" (meetup-details-widget id))])
+   (ui-operations/html "#contents" (meetup-details-widget id))]))
 
+(common/register-action-meta
 (actions/defjsonaction "meetup-title-update" [id title]
   (meetup/update! id :title title)
   [(ui-operations/fade (str ".meetup-title-" id) (hiccup.util/escape-html title))
    (ui-operations/fade "#update-title-loader"
-    (hiccup.core/html [:span {:onmouseover "$(this).fadeOut();"} "&nbsp;" [:i.icon-check] "&nbsp;Saved"]))])
+    (hiccup.core/html [:span {:onmouseover "$(this).fadeOut();"} "&nbsp;" [:i.icon-check] "&nbsp;Saved"]))]))
 
+(common/register-action-meta
 (actions/defjsonaction "meetup-place-update" [id place]
   (meetup/update! id :place place)
   (ui-operations/fade "#update-place-loader"
-    (hiccup.core/html [:span {:onmouseover "$(this).fadeOut();"} "&nbsp;" [:i.icon-check] "&nbsp;Saved"])))
+    (hiccup.core/html [:span {:onmouseover "$(this).fadeOut();"} "&nbsp;" [:i.icon-check] "&nbsp;Saved"]))))

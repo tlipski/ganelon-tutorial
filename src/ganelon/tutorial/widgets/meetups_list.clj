@@ -30,6 +30,8 @@
            {:class "btn" :disabled (when (<= cnt (+ skip LIMIT)) "1")} [:i.icon-forward ])
          (widgets/action-button "meetups-list" {:skip (* LIMIT (quot cnt LIMIT))}
            {:class "btn" :disabled (when (<= cnt (+ skip LIMIT)) "1")} [:i.icon-fast-forward ])]
+        ;this function is used solely for demonstration purposes
+        (common/show-action-source-link "meetups-list")
         [:ul.nav.nav-list
         (for [mu (meetup/retrieve-list admin-id skip LIMIT)]
           [:li
@@ -42,7 +44,8 @@
   (ui-operations/html "#meetups-list-widget"
     (meetups-list-widget skip)))
 
+(common/register-action-meta
 (actions/defjsonaction "meetups-list" [skip]
   (let [skip (Integer/parseInt skip)]
     (sess/put! :meetups-list-skip skip)
-    (update-list-widget-operation skip)))
+    (update-list-widget-operation skip))))

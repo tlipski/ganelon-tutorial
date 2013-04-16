@@ -18,7 +18,10 @@
     (widgets/action-form "invitation-create" {:meetup-id meetup-id} {:class "form-horizontal well"}
       [:span "Recipient's name:"] "&nbsp;"
       [:input {:type "text" :name "name" :required "1"}] "&nbsp;"
-      [:button.btn.btn-primary "Create new invitation"])
+      [:button.btn.btn-primary "Create new invitation"]
+      ;this function is used solely for demonstration purposes
+      (common/show-action-source-link "invitation-create")
+      )
     (let [invitations (invitation/retrieve-list meetup-id)]
       (if (empty? invitations)
         [:div.alert "No invitations created yet. Please use the form above to add some!"]
@@ -28,14 +31,18 @@
            "Link: " [:a {:href (str (web-helpers/current-request-host-part) "/i/" (:_id inv))}
                         (str (web-helpers/current-request-host-part) "/i/" (:_id inv))]
            (widgets/action-link "invitation-cancel" {:meetup-id meetup-id :id (:_id inv)} {:class "pull-right"}
-             [:i.icon-remove] " Cancel")]))))))
-
+             [:i.icon-remove] " Cancel")])))
+    ;this function is used solely for demonstration purposes
+    [:div.pull-right (common/show-action-source-link "invitation-cancel")] [:div {:style "height: 30px"}] ;add 30px for .pull-right
+    )))
+(common/register-action-meta
 (actions/defwidgetaction "invitation-create" [name meetup-id]
   (invitation/create! meetup-id name)
   (actions/put-operation! (meetup-times/refresh-meetup-times-list-widget-operations meetup-id))
-  (meetup-invitations-widget meetup-id))
+  (meetup-invitations-widget meetup-id)))
 
+(common/register-action-meta
 (actions/defwidgetaction "invitation-cancel" [meetup-id id]
   (invitation/delete! id)
   (actions/put-operation! (meetup-times/refresh-meetup-times-list-widget-operations meetup-id))
-  (meetup-invitations-widget meetup-id))
+  (meetup-invitations-widget meetup-id)))

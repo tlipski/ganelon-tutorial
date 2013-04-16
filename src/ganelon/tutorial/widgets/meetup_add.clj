@@ -29,11 +29,16 @@
                                           :value (web-helpers/get-request-parameter "place")
                                           :name "place"
                                           :required "1"}]]]
-      [:div.control-group [:div.controls [:button.btn.btn-primary.btn-large {:type "submit"} "Create"]]]))))
+      [:div.control-group [:div.controls [:button.btn.btn-primary.btn-large {:type "submit"} "Create"]
+                           ;the show source link below itself is used for demonstration purposes only!
+                           (common/show-action-source-link "meetup-create")
 
+                           ]]))))
+
+(common/register-action-meta
 (actions/defjsonaction "meetup-create" [title place]
   (let [id (meetup/create! title place (middleware/get-admin-id))]
     [(common/push-state (str "/meetup/edit/" id))
      (meetups-list/update-list-widget-operation 0)
      (ui-operations/html "#contents"
-       (meetup-edit/meetup-details-widget id))]))
+       (meetup-edit/meetup-details-widget id))])))

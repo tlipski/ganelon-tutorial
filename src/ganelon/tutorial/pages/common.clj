@@ -17,12 +17,15 @@
 (defn navbar []
   (h/html
     [:div.navbar.navbar-inverse.navbar-fixed-top {:style "opacity: 0.9;"}
-     [:div.navbar-inner [:div.container [:button.btn.btn-navbar.collapsed {:type "button" :data-target ".nav-collapse" :data-toggle "collapse"}
-                                         [:span.icon-bar ]
-                                         [:span.icon-bar ]
-                                         [:span.icon-bar ]]
-                         [:a.brand {:href "/"} "Ganelon tutorial"]
-                         [:div.nav-collapse.collapse [:ul.nav [:li [:a {:href "/"} "New meetup!"]]]]]]]))
+     [:div.navbar-inner
+      [:div.container
+;       [:button.btn.btn-navbar.collapsed {:type "button" :data-target ".nav-collapse" :data-toggle "collapse"}
+;        [:span.icon-bar ]
+;        [:span.icon-bar ]
+;        [:span.icon-bar ]]
+       [:a.brand {:href "/"} "Ganelon tutorial"]
+       ;                         [:div.nav-collapse.collapse [:ul.nav [:li [:a {:href "/"} "New meetup!"]]]]
+       ]]]))
 
 (defn layout [& content]
   (hiccup/html5
@@ -100,10 +103,10 @@
          source-url# (str GITHUB-URL ~*file* GITHUB-LINE-PREFIX line#)]
      (defn ~fname ~args
        (~@wrapper
-           [:div {:style "border-radius: 5px; border: 2px dashed #666; padding: 2px;"}
+           [:div {:style "border-radius: 5px; border: 2px dashed #666; padding: 2px; margin-bottom: 4px;"}
             [:div
             [:div {:style "float: right; font-size: 9px;"}
-             [:a {:href (str "#" id#) :data-toggle "modal"} "show source"]]
+             [:a {:href (str "#" id#) :data-toggle "modal"} "widget source:" ~(str fname)]]
             [:div.modal.hide.fade {:role "dialog" :id id# :style "width: 90%; left: 5%; margin: auto auto auto auto; top: 20px;"}
              [:div.modal-header [:button.close {:type "button" :data-dismiss "modal"} "×"]
               [:a
@@ -113,8 +116,37 @@
               [:h4 (str fname# ":" line#)]
               ]
              [:div.modal-body
-;              [:pre.prettyprint.lang-clj ~(with-out-str (pprint/pprint (second &form)))]
               [:pre.prettyprint.lang-clj ~(extract-s-expr *file* (inc (or (:line (meta &form)) 0)))]
               [:script "prettyPrint();"]
               ]]]
            ~@wrapped])))))
+
+(defmulti get-action-meta identity)
+
+(defmacro register-action-meta [[meth aname args & body]]
+  `(do
+     (~meth ~aname ~args ~@body)
+     (defmethod get-action-meta ~(str aname) [name#]
+       {:source  ~(extract-s-expr *file* (inc (or (:line (meta &form)) 0)))
+        :file ~*file*
+        :source-url (str GITHUB-URL ~*file* GITHUB-LINE-PREFIX ~(inc (or (:line (meta &form)) 0)))
+        :line ~(inc (or (:line (meta &form)) 0))})))
+
+(defn show-action-source-link [aname]
+  (let [id (java.util.UUID/randomUUID)
+        meta (get-action-meta aname)]
+    [:div
+      [:a {:style "font-size: 9px;" :href (str "#" id) :data-toggle "modal"} "action source:" aname]
+     [:div.modal.hide.fade {:role "dialog" :id id :style "width: 90%; left: 5%; margin: auto auto auto auto; top: 20px;"}
+      [:div.modal-header [:button.close {:type "button" :data-dismiss "modal"} "×"]
+       [:a
+        {:style "float: right; font-size: 9px; margin-right: 6px;"
+         :target "_blank" :href (:source-url meta)}
+        "Source on GitHub (opens new window/tab)"]
+       [:h4 (str (:file meta) ":" (:line meta))]
+       ]
+      [:div.modal-body
+       [:pre.prettyprint.lang-clj (:source meta)]
+       [:script "prettyPrint();"]]]]
+    )
+  )
