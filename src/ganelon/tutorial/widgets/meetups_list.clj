@@ -46,7 +46,10 @@
            (widgets/action-link "meetup-edit" {:id (:_id mu)} {}
              [:span {:class (str "meetup-title-" (:_id mu))}
               (hiccup.util/escape-html (:title mu))]
-             [:small {:style "margin-left: 5px; color: #666666"} (str (:create-time mu))])])]]))))
+             [:small {:style "margin-left: 5px; color: #666666"} (str (:create-time mu))])])]
+        ;this function is used solely for demonstration purposes
+        (common/show-action-source-link "meetup-edit")
+        ]))))
 
 (defn update-list-widget-operation [skip]
   (ui-operations/html "#meetups-list-widget"
