@@ -1,3 +1,11 @@
+;; Copyright (c) Tomek Lipski. All rights reserved.  The use
+;; and distribution terms for this software are covered by the Eclipse
+;; Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
+;; which can be found in the file LICENSE.txt at the root of this
+;; distribution.  By using this software in any fashion, you are
+;; agreeing to be bound by the terms of this license.  You must not
+;; remove this notice, or any other, from this software.
+
 (ns ganelon.tutorial.widgets.meetup-add
   (:require [ganelon.web.helpers :as web-helpers]
             [ganelon.web.widgets :as widgets]
@@ -10,8 +18,7 @@
             [ganelon.tutorial.services.meetup :as meetup]
             [ganelon.tutorial.widgets.meetup-edit :as meetup-edit]
             [ganelon.tutorial.widgets.meetups-list :as meetups-list]
-            [ganelon.tutorial.middleware :as middleware]
-            ))
+            [ganelon.tutorial.middleware :as middleware]))
 
 (common/wrap-with-linked-source
 (defn new-meetup-widget []
@@ -32,7 +39,6 @@
       [:div.control-group [:div.controls [:button.btn.btn-primary.btn-large {:type "submit"} "Create"]
                            ;the show source link below itself is used for demonstration purposes only!
                            (common/show-action-source-link "meetup-create")
-
                            ]]))))
 
 (common/register-action-meta

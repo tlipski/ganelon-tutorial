@@ -20,18 +20,26 @@
 
 (defonce SERVER (atom nil))
 
-(db/set-connection! (db/make-connection (or (get (System/getenv) "MONGOHQ_URL") "mongodb://localhost/meetups")))
+(defn get-mongo-url []
+  (or (get (System/getenv) "MONGOHQ_URL")
+    (System/getProperty "MONGOHQ_URL")
+    "mongodb://localhost/meetups"))
+
+(defn initialize[]
+  (db/set-connection! (db/make-connection (get-mongo-url))))
+
+(def handler
+  (->
+    (ganelon.web.app/app-handler
+      (ganelon.web.app/javascript-actions-route))
+    middleware/wrap-x-forwarded-for
+    (ring.middleware.stacktrace/wrap-stacktrace)
+    (ring.middleware.reload/wrap-reload {:dirs ["src/ganelon/tutorial/pages"]})))
 
 (defn start-demo [port]
-  (jetty/run-jetty
-    (->
-      (ganelon.web.app/app-handler
-        (ganelon.web.app/javascript-actions-route))
-      middleware/wrap-x-forwarded-for
-      (ring.middleware.stacktrace/wrap-stacktrace)
-      (ring.middleware.reload/wrap-reload {:dirs ["src/ganelon/tutorial/pages"]}))
-    {:port port :join? false}))
+  (jetty/run-jetty handler {:port port :join? false}))
 
 (defn -main [& m]
+  (initialize)
   (let [port (Integer. (or (first m) (get (System/getenv) "PORT" "8096")))]
     (swap! SERVER (fn [s] (when s (.stop s)) (start-demo port)))))

@@ -17,4 +17,6 @@
             :distribution :repo
             :comments "same as Clojure"}
   :aot :all
+  :plugins [[lein-ring "0.8.3"]]
+  :ring {:handler ganelon.tutorial/handler :init ganelon.tutorial/initialize}
   :main ganelon.tutorial)

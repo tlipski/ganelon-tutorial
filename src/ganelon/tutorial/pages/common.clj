@@ -1,3 +1,11 @@
+;; Copyright (c) Tomek Lipski. All rights reserved.  The use
+;; and distribution terms for this software are covered by the Eclipse
+;; Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
+;; which can be found in the file LICENSE.txt at the root of this
+;; distribution.  By using this software in any fashion, you are
+;; agreeing to be bound by the terms of this license.  You must not
+;; remove this notice, or any other, from this software.
+
 (ns ganelon.tutorial.pages.common
   (:require [ganelon.web.dyna-routes :as dyna-routes]
             [ganelon.web.widgets :as widgets]
@@ -19,13 +27,7 @@
     [:div.navbar.navbar-inverse.navbar-fixed-top {:style "opacity: 0.9;"}
      [:div.navbar-inner
       [:div.container
-;       [:button.btn.btn-navbar.collapsed {:type "button" :data-target ".nav-collapse" :data-toggle "collapse"}
-;        [:span.icon-bar ]
-;        [:span.icon-bar ]
-;        [:span.icon-bar ]]
-       [:a.brand {:href "/"} "Ganelon tutorial"]
-       ;                         [:div.nav-collapse.collapse [:ul.nav [:li [:a {:href "/"} "New meetup!"]]]]
-       ]]]))
+       [:a.brand {:href "/"} "Ganelon interactive tutorial"]]]]))
 
 (defn layout [& content]
   (hiccup/html5
@@ -58,7 +60,9 @@
      [:footer {:style "opacity:0.9; text-align: center; padding: 30px 0; margin-top: 70px; border-top: 1px solid #E5E5E5; color: #f6f6f6; background-color: #161616;"}
       [:div.container [:p "The Ganelon framework has been designed, created and is maintained by " [:a {:href "http://twitter.com/tomeklipski"} "@tomeklipski"] "."]
        [:p "The code is available under " [:a {:href "http://opensource.org/licenses/eclipse-1.0.php"} "Eclipse Public License 1.0"] "."]
-       [:p "This demo site runs on " [:a {:href "http://heroku.com"} "heroku"] "."]
+       [:p [:a {:href "http://github.com/tlipski/ganelon-tutorial"} "View the sources on GitHub."]]
+       [:p "This interactive tutorial runs on " [:a {:href "http://cloudbees.com"} "CloudBees"]
+        " and " [:a {:href "http://mongohq.com"} "MongoHQ"] "."]
        ]]
      [:script "prettyPrint();"]
      ]))
@@ -66,8 +70,8 @@
 (defn push-state [url]
   (ui/ui-operation "push-state" :url url))
 
-(def GITHUB-URL "https://bitbucket.org/tlipski/ganelon-tutorial/src/master/src/")
-(def GITHUB-LINE-PREFIX "#cl-")
+(def GITHUB-URL "https://github.com/tlipski/ganelon/blob/master/src/")
+(def GITHUB-LINE-PREFIX "#L")
 
 (defn split-wrapper-from-body [body]
   (let [body (into [] body)
@@ -113,12 +117,10 @@
                {:style "float: right; font-size: 9px; margin-right: 6px;"
                 :target "_blank" :href source-url#}
                "Source on GitHub (opens new window/tab)"]
-              [:h4 (str fname# ":" line#)]
-              ]
+              [:h4 (str fname# ":" line#)]]
              [:div.modal-body
               [:pre.prettyprint.lang-clj ~(extract-s-expr *file* (inc (or (:line (meta &form)) 0)))]
-              [:script "prettyPrint();"]
-              ]]]
+              [:script "prettyPrint();"]]]]
            ~@wrapped])))))
 
 (defmulti get-action-meta identity)
@@ -147,6 +149,4 @@
        ]
       [:div.modal-body
        [:pre.prettyprint.lang-clj (:source meta)]
-       [:script "prettyPrint();"]]]]
-    )
-  )
+       [:script "prettyPrint();"]]]]))
