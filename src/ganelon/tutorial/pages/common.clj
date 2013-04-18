@@ -65,12 +65,20 @@
         " and " [:a {:href "http://mongohq.com"} "MongoHQ"] "."]
        ]]
      [:script "prettyPrint();"]
+     "<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-40249846-1', 'tomeklipski.com');
+  ga('send', 'pageview');
+</script>"
      ]))
 
 (defn push-state [url]
   (ui/ui-operation "push-state" :url url))
 
-(def GITHUB-URL "https://github.com/tlipski/ganelon/blob/master/src/")
+(def GITHUB-URL "https://github.com/tlipski/ganelon-tutorial/blob/master/src/")
 (def GITHUB-LINE-PREFIX "#L")
 
 (defn split-wrapper-from-body [body]
