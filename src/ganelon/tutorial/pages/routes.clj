@@ -25,9 +25,10 @@
 
 (dyna-routes/defpage "/" []
   (meetup-layout
-    [:div.hero-unit [:h1 "Some information"]
-     [:p "Basic information about adding meetups provided here."]
-     [:p "Please use the form to the left to create or navigate meetups."]]))
+    [:div.hero-unit [:h1 "Welcome"]
+     [:p "Welcome to the interactive tutorial for " [:a {:href "http://ganelon.tomeklipski.com"} "Ganelon micro-framework."]]
+     [:p "This sample application used to manage meetups provides links to display source of every widget and action used.
+      In addition to that, each widget has a dashed border to mark its boundary."]]))
 
 (dyna-routes/defpage "/meetup/edit/:id" [id]
   (middleware/with-admin-id-from-meetup! id
