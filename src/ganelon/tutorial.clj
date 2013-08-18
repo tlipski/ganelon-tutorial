@@ -9,24 +9,17 @@
 (ns ganelon.tutorial
   (:gen-class)
   (:require [ganelon.tutorial.pages.routes]
-            [ganelon.tutorial.middleware]
             [ring.middleware.stacktrace]
             [ring.middleware.reload]
             [ring.adapter.jetty :as jetty]
             [ganelon.web.middleware :as middleware]
             [ganelon.web.app :as webapp]
-            [noir.session :as sess]
-            [somnium.congomongo :as db]))
+            [noir.session :as sess]))
 
 (defonce SERVER (atom nil))
 
-(defn get-mongo-url []
-  (or (get (System/getenv) "MONGOHQ_URL")
-    (System/getProperty "MONGOHQ_URL")
-    "mongodb://localhost/meetups"))
-
-(defn initialize[]
-  (db/set-connection! (db/make-connection (get-mongo-url))))
+(defn initialize[] ;nothing here... yet
+  )
 
 (def handler
   (->

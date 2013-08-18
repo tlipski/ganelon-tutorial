@@ -1,1 +1,0 @@
-Ganelon.registerOperation('push-state', function(o) { history.pushState({}, '', o.url) });

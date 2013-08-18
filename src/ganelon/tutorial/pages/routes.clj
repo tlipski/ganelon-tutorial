@@ -8,18 +8,12 @@
 
 (ns ganelon.tutorial.pages.routes
   (:require [ganelon.web.dyna-routes :as dyna-routes]
-            [ganelon.tutorial.pages.common :as common]
-            [noir.cookies :as cookies]
-            [ganelon.tutorial.widgets.invitation-details :as invitation-details]
-            [ganelon.tutorial.widgets.meetup-add :as meetup-add]
-            [ganelon.tutorial.widgets.meetup-edit :as meetup-edit]
-            [ganelon.tutorial.widgets.meetups-list :as meetups-list]
-            [ganelon.tutorial.middleware :as middleware]))
+            [ganelon.tutorial.pages.common :as common]))
 
 (defn meetup-layout [& contents]
   (common/layout
-    [:div.row-fluid [:div.span3 (meetup-add/new-meetup-widget)
-                     (meetups-list/meetups-list-widget nil)]
+    [:div.row-fluid [:div.span3 [:div {:style "border: 1px dashed #363636"} "TODO - new meetup widget here"]
+                     [:div {:style "border: 1px dashed #363636"} "TODO - meetup list widget here"]]
      [:div.span1 ]
      [:div.span8 [:div#contents contents]]]))
 
@@ -31,10 +25,9 @@
       In addition to that, each widget has a dashed border to mark its boundary."]]))
 
 (dyna-routes/defpage "/meetup/edit/:id" [id]
-  (middleware/with-admin-id-from-meetup! id
     (meetup-layout
-      (meetup-edit/meetup-details-widget id))))
+      [:div {:style "border: 1px dashed #363636"} "TODO - meetup details widget here"]))
 
 (dyna-routes/defpage "/i/:id" [id]
   (meetup-layout
-    (invitation-details/invitation-details-widget id)))
+    [:div {:style "border: 1px dashed #363636"} "TODO - invitation details widget here"]))
