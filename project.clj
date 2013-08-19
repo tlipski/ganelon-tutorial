@@ -9,12 +9,11 @@
 (defproject ganelon-tutorial "0.9-SNAPSHOT"
   :description "Ganelon tutorial"
   :url "http://ganelon.tomeklipski.com"
-  :dependencies [[ganelon "0.9.0"]]
+  :dependencies [[ganelon "0.9.0"]
+                 [org.clojure/clojure "1.5.1"]]
   :license {:name "Eclipse Public License - v 1.0"
             :url "http://www.eclipse.org/legal/epl-v10.html"
             :distribution :repo
             :comments "same as Clojure"}
-  :aot :all
-  :plugins [[lein-ring "0.8.3"]]
-  :ring {:handler ganelon.tutorial/handler :init ganelon.tutorial/initialize}
-  :main ganelon.tutorial)
+  :plugins [[lein-ring "0.8.6"]]
+  :ring {:handler ganelon.tutorial/handler :init ganelon.tutorial/initialize})

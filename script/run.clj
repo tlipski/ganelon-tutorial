@@ -7,6 +7,15 @@
 ;; remove this notice, or any other, from this software.
 
 (ns run
-  (:require [ganelon.tutorial]))
+  (:require [ganelon.tutorial]
+            [ring.adapter.jetty :as jetty]))
 
-(ganelon.tutorial/-main)
+(defonce SERVER (atom nil))
+
+(defn start-demo [port]
+  (jetty/run-jetty ganelon.tutorial/handler {:port port :join? false}))
+
+(ganelon.tutorial/initialize)
+
+(let [port (Integer. (get (System/getenv) "PORT" "3000"))]
+  (swap! SERVER (fn [s] (when s (.stop s)) (start-demo port))))

@@ -11,12 +11,10 @@
   (:require [ganelon.tutorial.pages.routes]
             [ring.middleware.stacktrace]
             [ring.middleware.reload]
-            [ring.adapter.jetty :as jetty]
             [ganelon.web.middleware :as middleware]
             [ganelon.web.app :as webapp]
             [noir.session :as sess]))
 
-(defonce SERVER (atom nil))
 
 (defn initialize[] ;nothing here... yet
   )
@@ -28,11 +26,3 @@
     middleware/wrap-x-forwarded-for
     (ring.middleware.stacktrace/wrap-stacktrace)
     (ring.middleware.reload/wrap-reload {:dirs ["src/ganelon/tutorial/pages"]})))
-
-(defn start-demo [port]
-  (jetty/run-jetty handler {:port port :join? false}))
-
-(defn -main [& m]
-  (initialize)
-  (let [port (Integer. (or (first m) (get (System/getenv) "PORT" "8096")))]
-    (swap! SERVER (fn [s] (when s (.stop s)) (start-demo port)))))
