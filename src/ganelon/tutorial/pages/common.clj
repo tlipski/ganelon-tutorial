@@ -30,10 +30,21 @@
 (defn layout [& content]
   (hiccup/html5
     [:head [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
-     [:title "Ganelon tutorial - Meetups"]
+     [:title "Ganelon tutorial - MongoDB browser"]
      ;real life site should use CDN/minify to serve static resources
      (hiccup/include-css "/ganelon/css/bootstrap.css")
      (hiccup/include-css "/ganelon/css/bootstrap-responsive.css")
+     (hiccup/include-css "/ganelon/css/jquery.gritter.css")
+     (hiccup/include-css "/datepicker/css/datepicker.css")
+     (hiccup/include-css "/timepicker/css/bootstrap-timepicker.min.css")
+     (hiccup/include-js "/ganelon/js/jquery-1.8.1.min.js") ;jQuery - required
+     (hiccup/include-js "/ganelon/js/bootstrap.js") ;Bootstrap - optional
+     (hiccup/include-js "/ganelon/js/ganelon.js") ;basic actions support
+     (hiccup/include-js "/ganelon/js/ext/ganelon.ops.bootstrap.js") ;additional Bootstrap related actions
+     (hiccup/include-js "/ganelon/js/ext/ganelon.ops.gritter.js") ; growl-style notifications through gritter.js
+     (hiccup/include-js "/ganelon/actions.js") ;dynamic actions interface
+     (hiccup/include-js "/datepicker/js/bootstrap-datepicker.js") ;date picker
+     (hiccup/include-js "/timepicker/js/bootstrap-timepicker.min.js") ;date picker
      ]
     [:body.default-body [:div#navbar (navbar)]
      [:div.container {:style "padding-top: 70px"}

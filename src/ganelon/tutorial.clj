@@ -13,11 +13,17 @@
             [ring.middleware.reload]
             [ganelon.web.middleware :as middleware]
             [ganelon.web.app :as webapp]
-            [noir.session :as sess]))
+            [noir.session :as sess]
+            [somnium.congomongo :as db]))
 
+(defn get-mongo-url []
+  (or
+    (get (System/getenv) "MONGOHQ_URL")
+    (System/getProperty "MONGOHQ_URL")
+    "mongodb://localhost/meetups"))
 
-(defn initialize[] ;nothing here... yet
-  )
+(defn initialize[]
+  (db/set-connection! (db/make-connection (get-mongo-url))))
 
 (def handler
   (->
