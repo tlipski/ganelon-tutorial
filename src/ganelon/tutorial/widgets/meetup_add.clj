@@ -24,17 +24,18 @@
     [:p "Please provide meetup details:"]
     (widgets/action-form "meetup-create" {} {:class "form well"}
       [:div.control-group [:label.control-label {:for "inputTitle"} "Title"]
-       [:div.controls [:input#inputTitle {:placeholder "Title for a meetup" :type "text"
-                                          :value (web-helpers/get-request-parameter "title")
-                                          :name "title"
-                                          :required "1"}]]]
+       [:div.controls
+        [:input#inputTitle {:placeholder "Title for a meetup" :type "text"
+                            :name "title"
+                            :required "1"}]]]
       [:div.control-group [:label.control-label {:for "inputPlace"} "Place"]
-       [:div.controls [:input#inputPlace {:placeholder "Place for a meetup" :type "text"
-                                          :value (web-helpers/get-request-parameter "place")
-                                          :name "place"
-                                          :required "1"}]]]
-      [:div.control-group [:div.controls [:button.btn.btn-primary.btn-large {:type "submit"} "Create"]
-                           ]])))
+       [:div.controls
+        [:input#inputPlace {:placeholder "Place for a meetup" :type "text"
+                            :name "place"
+                            :required "1"}]]]
+      [:div.control-group
+       [:div.controls
+        [:button.btn.btn-primary.btn-large {:type "submit"} "Create"]]])))
 
 (actions/defjsonaction "meetup-create" [title place]
   (let [id (meetup/create! title place)]

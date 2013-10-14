@@ -23,24 +23,31 @@
 (defn meetup-edit-form-widget [meetup]
   (widgets/with-div
     [:h1 "Meetup details"]
-    (let [url (str (web-helpers/current-request-host-part)  "/meetup/edit/" (:_id meetup))]
+    (let [url (str (web-helpers/current-request-host-part)  "/meetup/edit/"
+                (:_id meetup))]
       [:p "Meetup admin url: " [:a {:href url } url]])
     [:form.form-horizontal.well
      [:div.control-group [:label.control-label {:for "inputTitle"} "Title"]
-      [:div.controls [:input#inputTitle.input-xlarge {:placeholder "Title for a meetup" :type "text"
-                                                      :value (:title meetup)
-                                                      :onkeypress "$('#update-title-loader > *').fadeOut();"
-                                                      :onchange (str "GanelonAction.meetup_title_update('" (:_id meetup) "', this.value);")
-                                                      :name "title"
-                                                      :required "1"}]
+      [:div.controls [:input#inputTitle.input-xlarge
+                      {:placeholder "Title for a meetup" :type "text"
+                       :value (:title meetup)
+                       :onkeypress "$('#update-title-loader > *').fadeOut();"
+                       :onchange (str "GanelonAction.meetup_title_update('"
+                                   (:_id meetup)
+                                   "', this.value);")
+                       :name "title"
+                       :required "1"}]
        [:span#update-title-loader]]]
      [:div.control-group [:label.control-label {:for "inputPlace"} "Place"]
-      [:div.controls [:input#inputPlace.input-xlarge {:placeholder "Place for a meetup" :type "text"
-                                                      :value (:place meetup)
-                                                      :onkeypress "$('#update-place-loader > *').fadeOut();"
-                                                      :onchange (str "GanelonAction.meetup_place_update('" (:_id meetup) "', this.value);")
-                                                      :name "place"
-                                                      :required "1"}]
+      [:div.controls [:input#inputPlace.input-xlarge
+                      {:placeholder "Place for a meetup" :type "text"
+                       :value (:place meetup)
+                       :onkeypress "$('#update-place-loader > *').fadeOut();"
+                       :onchange (str "GanelonAction.meetup_place_update('"
+                                   (:_id meetup)
+                                   "', this.value);")
+                       :name "place"
+                       :required "1"}]
        [:span#update-place-loader]]]]))
 
 (defn meetup-details-widget [meetup-id]
@@ -57,9 +64,11 @@
 
 (actions/defjsonaction "meetup-title-update" [id title]
   (meetup/update! id :title title)
-  [(ui-operations/fade (str ".meetup-title-" id) (hiccup.util/escape-html title))
+  [(ui-operations/fade (str ".meetup-title-" id)
+     (hiccup.util/escape-html title))
    (ui-operations/fade "#update-title-loader"
-    (hiccup.core/html [:span {:onmouseover "$(this).fadeOut();"} "&nbsp;" [:i.icon-check] "&nbsp;Saved"]))])
+    (hiccup.core/html [:span {:onmouseover "$(this).fadeOut();"}
+                       "&nbsp;" [:i.icon-check] "&nbsp;Saved"]))])
 
 (actions/defjsonaction "meetup-place-update" [id place]
   (meetup/update! id :place place)

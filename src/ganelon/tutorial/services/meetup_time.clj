@@ -14,11 +14,15 @@
   (db/fetch-one :meetup-times :where {:_id (db/object-id id)}))
 
 (defn retrieve-list [meetup-id]
-  (db/fetch :meetup-times :where {:meetup-id meetup-id} :sort {:date 1 :time 1}))
+  (db/fetch :meetup-times :where {:meetup-id meetup-id}
+    :sort {:date 1 :time 1}))
 
 (defn add-time! [meetup-id date time]
-  (when (empty? (db/fetch :meetup-times :where {:meetup-id meetup-id :date date :time time}))
-   (db/insert! :meetup-times {:meetup-id meetup-id :date date :time time :create-time (java.util.Date.) :accepted []})))
+  (when (empty? (db/fetch :meetup-times :where
+                  {:meetup-id meetup-id :date date :time time}))
+   (db/insert! :meetup-times {:meetup-id meetup-id :date date
+                              :time time :create-time (java.util.Date.)
+                              :accepted []})))
 
 (defn remove-time! [id]
   (db/destroy! :meetup-times {:_id (db/object-id id)}))
